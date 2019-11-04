@@ -21,18 +21,18 @@ NC='\033[0m'
 
 # Helper functions
 function newTestCase() {
-  test_num=$((test_num+1))
+  test_num=$((test_num + 1))
   description=$1
 }
 
 function printTestCase() {
   if [ "$1" == "true" ]; then
     echo -e "${GREEN}[o]${NC} Test Case $test_num: $description"
-    result_passes=$((result_passes+1))
+    result_passes=$((result_passes + 1))
     test_flag[$test_num]="1"
   else
     echo -e "${RED}[x]${NC} Test Case $test_num: $description"
-    result_fails=$((result_fails+1))
+    result_fails=$((result_fails + 1))
     test_flag[$test_num]="0"
   fi
 }
@@ -52,36 +52,36 @@ function formatResponse() {
 
 function getOperation() {
   response=$(curl --request GET -sw "\nRESP_CODE:%{response_code}" \
-      --url "$apiUrl/employees")
-   formatResponse
+    --url "$apiUrl/employees")
+  formatResponse
 }
 
 function postOperation() {
   response=$(curl --request POST -sw "\nRESP_CODE:%{response_code}" \
-      --header "Content-Type: application/json" \
-      --data "$1" \
-      --url "$apiUrl/employees")
-   formatResponse
+    --header "Content-Type: application/json" \
+    --data "$1" \
+    --url "$apiUrl/employees")
+  formatResponse
 }
 
 function getByIdOperation() {
   response=$(curl --request GET -sw "\nRESP_CODE:%{response_code}" \
-      --url "$apiUrl/employees/$1")
-   formatResponse
+    --url "$apiUrl/employees/$1")
+  formatResponse
 }
 
 function deleteByIdOperation() {
   response=$(curl --request DELETE -sw "\nRESP_CODE:%{response_code}" \
-      --url "$apiUrl/employees/$1")
-   formatResponse
+    --url "$apiUrl/employees/$1")
+  formatResponse
 }
 
 function putByIdOperation() {
   response=$(curl --request PUT -sw "\nRESP_CODE:%{response_code}" \
-      --header "Content-Type: application/json" \
-      --data "$2" \
-      --url "$apiUrl/employees/$1")
-   formatResponse
+    --header "Content-Type: application/json" \
+    --data "$2" \
+    --url "$apiUrl/employees/$1")
+  formatResponse
 }
 
 function shouldFailGetOperation() {
@@ -93,7 +93,7 @@ function shouldFailGetOperation() {
     printTestCase false
     echo "Response code should have been \"$2\" but found \"$statusCode\""
     echo "Response body: $body"
-    echo  ""
+    echo ""
   fi
 }
 
@@ -114,7 +114,7 @@ function shouldFailPostOperation() {
     printTestCase false
     echo "Response code should have been \"$2\" but found \"$statusCode\""
     echo "Response body: $body"
-    echo  ""
+    echo ""
   fi
 }
 
@@ -135,7 +135,7 @@ function shouldFailDeleteOperation() {
     printTestCase false
     echo "Response code should have been \"$2\" but found \"$statusCode\""
     echo "Response body: $body"
-    echo  ""
+    echo ""
   fi
 }
 
@@ -156,38 +156,37 @@ function shouldFailPutOperation() {
     printTestCase false
     echo "Response code should have been \"$3\" but found \"$statusCode\""
     echo "Response body: $body"
-    echo  ""
+    echo ""
   fi
 }
 
 function shouldBadRequestPutOperation() {
-    shouldFailPutOperation "$1" "$2" "400"
+  shouldFailPutOperation "$1" "$2" "400"
 }
 
 function shouldNotFoundPutOperation() {
-    shouldFailPutOperation "$1" "$2" "404"
+  shouldFailPutOperation "$1" "$2" "404"
 }
 
 function shouldUnsupportedMediaTypePutOperation() {
-    shouldFailPutOperation "$1" "$2" "415"
+  shouldFailPutOperation "$1" "$2" "415"
 }
 
-names=( "Thor" "Iron Man" "Hulk" "Captain America" "War Machine" "Vision" "Falcon" "Ant Man" "Spider Man" "Black Widow" )
-jobs=( "Director" "Manager" "Lead" "Manager" "QA" "DevOps" "Developer" "Lead" "Intern" "Developer" )
-managers=( -1 1 1 1 2 2 4 4 2 3 )
+names=("Thor" "Iron Man" "Hulk" "Captain America" "War Machine" "Vision" "Falcon" "Ant Man" "Spider Man" "Black Widow")
+jobs=("Director" "Manager" "Lead" "Manager" "QA" "DevOps" "Developer" "Lead" "Intern" "Developer")
+managers=(-1 1 1 1 2 2 4 4 2 3)
 function generateData() {
-    for i in {0..9}
-    do
-      postOperation  "{ \"name\": \"${names[i]}\", \"jobTitle\": \"${jobs[i]}\", \"managerId\": ${managers[i]} }"
-      if [ "$statusCode" != "201" ]; then
-        printTestCase false
-        echo "Faild to add initial data, response status code should have been \"201\" but found \"$statusCode\""
-        echo "Response body: $body"
-        echo ""
-        printResults
-        exit
-      fi
-    done
+  for i in {0..9}; do
+    postOperation "{ \"name\": \"${names[i]}\", \"jobTitle\": \"${jobs[i]}\", \"managerId\": ${managers[i]} }"
+    if [ "$statusCode" != "201" ]; then
+      printTestCase false
+      echo "Faild to add initial data, response status code should have been \"201\" but found \"$statusCode\""
+      echo "Response body: $body"
+      echo ""
+      printResults
+      exit
+    fi
+  done
 }
 
 # Initialize dummy data
@@ -211,8 +210,7 @@ fi
 newTestCase "Check if employees list is soreted"
 sortedArray=(1 4 2 8 3 10 7 6 5 9)
 failedFlag=0
-for i in {0..9}
-do
+for i in {0..9}; do
   id=$(echo "$body" | $jq ".[$i].id")
   if [ "$id" != "${sortedArray[i]}" ]; then
     printTestCase false
@@ -277,15 +275,14 @@ fi
 
 newTestCase "Check if colleagues of employee are in sorted order"
 
-if [ "${test_flag[$test_num-1]}" == "0" ]; then
+if [ "${test_flag[$test_num - 1]}" == "0" ]; then
   printTestCase false
-  echo "Cannot run this test as test $((test_num-1)) has failed"
+  echo "Cannot run this test as test $((test_num - 1)) has failed"
   echo ""
 else
   sortedArray=(4 3)
 
-  for i in {0..1}
-  do
+  for i in {0..1}; do
     id=$(echo "$body" | $jq ".colleagues[$i].id")
     if [ "$id" != "${sortedArray[i]}" ]; then
       printTestCase false
@@ -305,13 +302,12 @@ getByIdOperation 1
 
 sortedArray=(4 2 3)
 
-if [ "${test_flag[$test_num-2]}" == "0" ]; then
+if [ "${test_flag[$test_num - 2]}" == "0" ]; then
   printTestCase false
-  echo "Cannot run this test as test $((test_num-2)) has failed"
+  echo "Cannot run this test as test $((test_num - 2)) has failed"
   echo ""
 else
-  for i in {0..2}
-  do
+  for i in {0..2}; do
     id=$(echo "$body" | $jq ".subordinates[$i].id")
     if [ "$id" != "${sortedArray[i]}" ]; then
       printTestCase false
@@ -326,9 +322,9 @@ else
   fi
 fi
 
-if [ "${test_flag[$test_num-1]}" == "0" ]; then
+if [ "${test_flag[$test_num - 1]}" == "0" ]; then
   printTestCase false
-  echo "Cannot run many tests as test $((test_num-1)) has failed"
+  echo "Cannot run many tests as test $((test_num - 1)) has failed"
   echo ""
 else
   newTestCase "Check if it fails to get due to id has no employees assigned"
@@ -344,7 +340,7 @@ fi
 newTestCase "Perform POST /employee"
 
 postOperation '{ "name": "Black Panther", "jobTitle": "Manager", "managerId": 1 }'
-id=$(echo "$body"| $jq ".id")
+id=$(echo "$body" | $jq ".id")
 
 if [ "$id" == "null" ] || [ "$id" == "" ]; then
   id=$(echo "$body" | $jq ".employee.id")
@@ -363,8 +359,8 @@ else
   echo ""
 fi
 
-if [ "${test_flag[$test_num-1]}" == "0" ]; then
-  echo "Cannot run many tests as test $((test_num-1)) has failed"
+if [ "${test_flag[$test_num - 1]}" == "0" ]; then
+  echo "Cannot run many tests as test $((test_num - 1)) has failed"
   echo ""
 else
   newTestCase "Check if it fails to post with empty body"
@@ -420,8 +416,8 @@ else
   echo ""
 fi
 
-if [ "${test_flag[$test_num-1]}" == "0" ]; then
-  echo "Cannot run many tests as test $((test_num-1)) has failed"
+if [ "${test_flag[$test_num - 1]}" == "0" ]; then
+  echo "Cannot run many tests as test $((test_num - 1)) has failed"
   echo ""
 else
   newTestCase "Check if it updates employee name"
@@ -487,16 +483,16 @@ else
 
   newTestCase "Check if replaced employee's subordinates' manager ID has changed"
 
-  if [ "${test_flag[$test_num-1]}" == "0" ]; then
+  if [ "${test_flag[$test_num - 1]}" == "0" ]; then
     printTestCase false
-    echo "Cannot run this test as test $((test_num-1)) has failed"
+    echo "Cannot run this test as test $((test_num - 1)) has failed"
     echo ""
   else
     getByIdOperation 5
-    managerId1=$(echo "$body"| $jq ".manager.id")
+    managerId1=$(echo "$body" | $jq ".manager.id")
 
     getByIdOperation 6
-    managerId2=$(echo "$body"| $jq ".manager.id")
+    managerId2=$(echo "$body" | $jq ".manager.id")
 
     if [ "$managerId1" == "$newEmployee" ] && [ "$managerId2" == "$newEmployee" ]; then
       printTestCase true
@@ -572,13 +568,13 @@ fi
 
 newTestCase "Check if deleted employee's subordinates' manager ID has changed"
 
-if [ "${test_flag[$test_num-1]}" == "0" ]; then
+if [ "${test_flag[$test_num - 1]}" == "0" ]; then
   printTestCase false
-  echo "Cannot run this test as test $((test_num-1)) has failed"
+  echo "Cannot run this test as test $((test_num - 1)) has failed"
   echo ""
 else
   getByIdOperation 10
-  managerId1=$(echo "$body"| $jq ".manager.id")
+  managerId1=$(echo "$body" | $jq ".manager.id")
 
   if [ "$managerId1" == "1" ]; then
     printTestCase true
@@ -590,9 +586,9 @@ else
   fi
 fi
 
-if [ "${test_flag[$test_num-1]}" == "0" ]; then
+if [ "${test_flag[$test_num - 1]}" == "0" ]; then
   printTestCase false
-  echo "Cannot run many tests as test $((test_num-1)) has failed"
+  echo "Cannot run many tests as test $((test_num - 1)) has failed"
   echo ""
 else
   newTestCase "Check if it fails to delete due to id has no employees assigned"
