@@ -1,0 +1,16 @@
+version: '3'
+services:
+  mysql-server:
+    image: mysql:5.7.28
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: '1994'
+      MYSQL_USER: 'twister'
+      MYSQL_PASSWORD: '1653'
+      MYSQL_DATABASE: 'organization_charts'
+
+  app:
+    build: .
+    restart: on-failure
+    ports:
+      - "1653:8080"

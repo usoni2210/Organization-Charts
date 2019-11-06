@@ -1,33 +1,31 @@
 package com.twister.organizationcharts.Controller;
 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twister.organizationcharts.Model.Employee;
 import com.twister.organizationcharts.Model.ReplaceWrapper;
 import com.twister.organizationcharts.Repository.DesignationRepo;
 import com.twister.organizationcharts.Repository.EmployeeRepo;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.testng.annotations.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.testng.Assert.assertEquals;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest()
 @AutoConfigureMockMvc
-class EmployeeControllerTest {
+public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,14 +42,8 @@ class EmployeeControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get("/rest/employees")
                 .accept(MediaType.APPLICATION_JSON_VALUE);
-        MvcResult mvcResult = mockMvc.perform(requestBuilder)
-                .andReturn();
-
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(200, status);
-        String content = mvcResult.getResponse().getContentAsString();
-        Employee[] employeesList = mapFromJson(content, Employee[].class);
-        assertEquals(10, employeesList.length);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk());
     }
 
     //Get Particular Employee Info
@@ -64,7 +56,7 @@ class EmployeeControllerTest {
 
     @Test
     void getWrongEmployeeId() throws Exception {
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/rest/employees/20");
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/rest/employees/200");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNotFound());
     }
@@ -91,11 +83,9 @@ class EmployeeControllerTest {
         employee.setId(22);
 
         String inputJson = mapToJson(employee);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
-                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
-
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(HttpStatus.BAD_REQUEST.value(), status);
+        mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -267,7 +257,7 @@ class EmployeeControllerTest {
 
     @Test
     void putEmployeeWithManagerIdNull() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", null, "Lead", true);
+        ReplaceWrapper employee = new ReplaceWrapper("Umesh", null, "Manager", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -427,7 +417,7 @@ class EmployeeControllerTest {
     // Delete Employee
     @Test
     void deleteEmployee() throws Exception {
-        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/rest/employees/6").accept(MediaType.APPLICATION_JSON);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/rest/employees/6");
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isNoContent());
     }

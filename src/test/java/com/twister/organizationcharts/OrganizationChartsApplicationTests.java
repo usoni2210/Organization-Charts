@@ -1,10 +1,10 @@
 package com.twister.organizationcharts;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.testng.annotations.Test;
 
 @SpringBootTest
-class OrganizationChartsApplicationTests {
+public class OrganizationChartsApplicationTests {
 
     @Test
     void contextLoads() {
