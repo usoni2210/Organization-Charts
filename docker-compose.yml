@@ -13,4 +13,12 @@ services:
     build: .
     restart: on-failure
     ports:
-      - "1653:8080"
+      - "8080:8080"
+    depends_on:
+      - start_dependencies
+
+  start_dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      - mysql-server
+    command: mysql-server:3306
