@@ -1,4 +1,4 @@
-INSERT INTO designation (DESIGNATION_ID, NAME, LEVEL)
+/* INSERT INTO designation (DESIGNATION_ID, NAME, LEVEL)
 VALUES (1, 'Director', 1),
        (2, 'Manager', 2),
        (3, 'Lead', 3),
@@ -7,7 +7,7 @@ VALUES (1, 'Director', 1),
        (6, 'QA', 4),
        (7, 'Intern', 5);
 
-/*INSERT INTO employee (ID, NAME, JOB_TITLE, MANAGER_ID)
+INSERT INTO employee (ID, NAME, JOB_TITLE, MANAGER_ID)
     VALUES (1, 'Thor', 'Director', -1),
         (2, 'Iron Man', 'Manager', 1),
         (3, 'Hulk', 'Lead', 1),

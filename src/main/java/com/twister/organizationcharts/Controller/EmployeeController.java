@@ -20,7 +20,6 @@ import javax.validation.constraints.Min;
 import java.util.*;
 
 @RestController
-@RequestMapping("/rest/employees")
 public class EmployeeController {
 
     private final EmployeeRepo employeeRepo;

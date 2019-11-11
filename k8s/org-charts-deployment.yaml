@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: org-charts-deployment
+  labels:
+    component: org-charts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: org-charts
+  template:
+    metadata:
+      labels:
+        component: org-charts
+    spec:
+      containers:
+        - name: org-charts
+          image: twister22/organization-charts:test
+          ports:
+            - containerPort: 8080
+

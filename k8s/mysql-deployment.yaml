@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  labels:
+    component: mysql-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: mysql-server
+  template:
+    metadata:
+      labels:
+        component: mysql-server
+    spec:
+      containers:
+        - name: mysql-server
+          image: mysql:5.7.28
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: '1994'
+            - name: MYSQL_DATABASE
+              value: 'organization_charts'
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-storage
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
