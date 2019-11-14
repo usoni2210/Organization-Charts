@@ -1,13 +1,11 @@
 package com.twister.organizationcharts.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 @Entity
+@Table(name = "designation")
 public class Designation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,27 +13,35 @@ public class Designation {
     private int designationId;
     @Size(min = 2, message = "Designation Name should have atleast 2 Characters")
     private String name;
-    @Min(1)
+    @Min(value = 1, message = "Designation minimum value should be 1")
     private int level;
+
+    public Designation() {
+    }
+
+    public Designation(String name, int level) {
+        this.name = name;
+        this.level = level;
+    }
 
     public int getDesignationId() {
         return designationId;
-    }
-
-    public void setDesignationId(int designationId) {
-        this.designationId = designationId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getLevel() {
         return level;
+    }
+
+    public void setDesignationId(int designationId) {
+        this.designationId = designationId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setLevel(int level) {

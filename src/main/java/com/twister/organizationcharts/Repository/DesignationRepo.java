@@ -9,8 +9,7 @@ import java.util.Set;
 
 
 @Component
-public interface DesignationRepo extends JpaRepository<Designation, String> {
+public interface DesignationRepo extends JpaRepository<Designation, Integer> {
     Designation getDesignationByName(String name);
-
     List<Designation> getDesignationsByNameIn(Set<String> names);
 }

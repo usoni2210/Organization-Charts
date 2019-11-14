@@ -7,12 +7,15 @@ import javax.validation.constraints.NotNull;
 
 
 @Validated
-public class ReplaceWrapper extends Employee {
+public class EmployeeReplace extends EmployeeAdd {
     @NotNull(message = "replace value cannot be null")
     @JsonProperty(required = true)
     private Boolean replace;
 
-    public ReplaceWrapper(String name, Integer managerId, String jobTitle, Boolean replace) {
+    public EmployeeReplace() {
+    }
+
+    public EmployeeReplace(String name, Integer managerId, String jobTitle, Boolean replace) {
         super(name, managerId, jobTitle);
         this.replace = replace;
     }

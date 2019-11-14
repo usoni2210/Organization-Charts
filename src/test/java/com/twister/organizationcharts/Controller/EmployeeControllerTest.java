@@ -3,8 +3,8 @@ package com.twister.organizationcharts.Controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twister.organizationcharts.Model.Employee;
-import com.twister.organizationcharts.Model.ReplaceWrapper;
+import com.twister.organizationcharts.Model.EmployeeAdd;
+import com.twister.organizationcharts.Model.EmployeeReplace;
 import com.twister.organizationcharts.Repository.DesignationRepo;
 import com.twister.organizationcharts.Repository.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,19 +78,8 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
     }
 
     @Test
-    void addEmployeeWithEmployeeId() throws Exception {
-        Employee employee = new Employee("Umesh", 0, "Director");
-        employee.setId(22);
-
-        String inputJson = mapToJson(employee);
-        mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
-                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void addEmployeeWithShortName() throws Exception {
-        Employee employee = new Employee("U", 1, "Manager");
+        EmployeeAdd employee = new EmployeeAdd("U", 1, "Manager");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -102,7 +91,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithNameNull() throws Exception {
-        Employee employee = new Employee("", 1, "Manager");
+        EmployeeAdd employee = new EmployeeAdd("", 1, "Manager");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -114,7 +103,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithManagerNull() throws Exception {
-        Employee employee = new Employee("Umesh", null, "Manager");
+        EmployeeAdd employee = new EmployeeAdd("Umesh", null, "Manager");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -126,7 +115,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithJobTitleNull() throws Exception {
-        Employee employee = new Employee("Umesh", 1, null);
+        EmployeeAdd employee = new EmployeeAdd("Umesh", 1, null);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -138,7 +127,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithWrongDesignation() throws Exception {
-        Employee employee = new Employee("Umesh", 1, "HOD");
+        EmployeeAdd employee = new EmployeeAdd("Umesh", 1, "HOD");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -150,7 +139,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithWrongManagerId() throws Exception {
-        Employee employee = new Employee("Umesh", 100, "Manager");
+        EmployeeAdd employee = new EmployeeAdd("Umesh", 100, "Manager");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -162,7 +151,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithDirectorUnderSupervisor() throws Exception {
-        Employee employee = new Employee("Umesh", 3, "Director");
+        EmployeeAdd employee = new EmployeeAdd("Umesh", 3, "Director");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -174,7 +163,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithManagerWithoutSupervisor() throws Exception {
-        Employee employee = new Employee("Umesh", 0, "Manager");
+        EmployeeAdd employee = new EmployeeAdd("Umesh", 0, "Manager");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -186,7 +175,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithRankMistake() throws Exception {
-        Employee employee = new Employee("Umesh", 5, "Manager");
+        EmployeeAdd employee = new EmployeeAdd("Umesh", 5, "Manager");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -198,7 +187,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithNewDirector() throws Exception {
-        Employee employee = new Employee("Umesh", -1, "Director");
+        EmployeeAdd employee = new EmployeeAdd("Umesh", -1, "Director");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -210,7 +199,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithJsonData() throws Exception {
-        Employee employee = new Employee("Umesh", 1, "Intern");
+        EmployeeAdd employee = new EmployeeAdd("Umesh", 1, "Intern");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
@@ -233,7 +222,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithNameNull() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper(null, 1, "Lead", true);
+        EmployeeReplace employee = new EmployeeReplace(null, 1, "Lead", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -245,7 +234,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithJobTitleNull() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 1, null, true);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 1, null, true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -257,7 +246,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithManagerIdNull() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", null, "Manager", true);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", null, "Manager", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -269,20 +258,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithReplaceNull() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 1, "Lead", null);
-
-        String inputJson = mapToJson(employee);
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
-                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
-
-        int status = mvcResult.getResponse().getStatus();
-        assertEquals(400, status);
-    }
-
-    @Test
-    void putEmployeeWithEmployeeIdInJson() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 1, "Lead", true);
-        employee.setId(4);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 1, "Lead", null);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -294,7 +270,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithWrongEmployeeId() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 1, "Lead", true);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 1, "Lead", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/100")
@@ -306,7 +282,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithWShortName() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("U", 1, "Lead", true);
+        EmployeeReplace employee = new EmployeeReplace("U", 1, "Lead", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -318,7 +294,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithWrongJobTitle() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 1, "Head", true);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 1, "Head", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -330,7 +306,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithWrongManagerId() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 100, "Lead", true);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 100, "Lead", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -342,7 +318,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithDirectorUnderSupervisor() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 1, "Director", true);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 1, "Director", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -354,7 +330,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithoutSupervisor() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 0, "Lead", true);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 0, "Lead", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -367,7 +343,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithWrongRank() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 3, "Manager", true);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 3, "Manager", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -379,7 +355,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithLowerRankSupervisor() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 1, "Developer", true);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 1, "Developer", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/3")
@@ -391,7 +367,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithReplaceTrue() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 1, "Manager", true);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 1, "Manager", true);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")
@@ -403,7 +379,7 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void putEmployeeWithReplaceFalse() throws Exception {
-        ReplaceWrapper employee = new ReplaceWrapper("Umesh", 1, "Manager", false);
+        EmployeeReplace employee = new EmployeeReplace("Umesh", 1, "Manager", false);
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put("/rest/employees/4")

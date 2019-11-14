@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-deployment
+  namespace: org-charts-ns
   labels:
     component: mysql-server
 spec:
@@ -11,6 +12,7 @@ spec:
       component: mysql-server
   template:
     metadata:
+      namespace: org-charts-ns
       labels:
         component: mysql-server
     spec:
@@ -22,6 +24,10 @@ spec:
               value: '1994'
             - name: MYSQL_DATABASE
               value: 'organization_charts'
+            - name: MYSQL_USER
+              value: 'twister'
+            - name: MYSQL_PASSWORD
+              value: '1653'
           ports:
             - containerPort: 3306
           volumeMounts:

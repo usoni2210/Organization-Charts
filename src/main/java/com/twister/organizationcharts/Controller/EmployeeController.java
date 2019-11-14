@@ -1,148 +1,77 @@
 package com.twister.organizationcharts.Controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.twister.organizationcharts.Exceptions.DesignationException;
-import com.twister.organizationcharts.Exceptions.EmployeeException;
-import com.twister.organizationcharts.Model.Designation;
 import com.twister.organizationcharts.Model.Employee;
-import com.twister.organizationcharts.Model.ReplaceWrapper;
-import com.twister.organizationcharts.Repository.DesignationRepo;
-import com.twister.organizationcharts.Repository.EmployeeRepo;
+import com.twister.organizationcharts.Model.EmployeeAdd;
+import com.twister.organizationcharts.Model.EmployeeReplace;
+import com.twister.organizationcharts.Model.Exceptions.EmployeeException;
 import com.twister.organizationcharts.View.EmployeeJsonView;
+import com.twister.organizationcharts.services.EmployeeService;
+import com.twister.organizationcharts.services.EmployeeValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @RestController
+@RequestMapping("/rest/employees")
 public class EmployeeController {
 
-    private final EmployeeRepo employeeRepo;
-    private final DesignationRepo designationRepo;
-    private final Comparator<Employee> sortEmployee;
+    private final EmployeeService employeeService;
+    private final EmployeeValidation employeeValidation;
 
-    public EmployeeController(@Autowired EmployeeRepo employeeRepo, @Autowired DesignationRepo designationRepo) {
-        this.employeeRepo = employeeRepo;
-        this.designationRepo = designationRepo;
-        sortEmployee = Comparator.comparingInt((Employee o) -> designationRepo.getDesignationByName(o.getJobTitle()).getLevel()).thenComparing(Employee::getName);
+    public EmployeeController(@Autowired EmployeeService employeeService, EmployeeValidation employeeValidation) {
+        this.employeeService = employeeService;
+        this.employeeValidation = employeeValidation;
     }
 
     @GetMapping("")
     @JsonView(EmployeeJsonView.EmployeeExternal.class)
-    public ResponseEntity<List<Employee>> getAllEmployees() {
-        List<Employee> employees = employeeRepo.findAll();
-        employees.sort(sortEmployee);
-        return new ResponseEntity<>(employees, HttpStatus.OK);
+    public ResponseEntity<List<Employee>> getALLEmployeesInfo() {
+        return new ResponseEntity<>(employeeService.getEmployeeList(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
     @JsonView(EmployeeJsonView.EmployeeExternal.class)
     public ResponseEntity<Map<String, Object>> getEmployeeInfo(@PathVariable("id") int id) {
-        if (id < 1)
-            throw new EmployeeException("Employee not found", HttpStatus.BAD_REQUEST);
-        if (!employeeRepo.existsById(id))
-            throw new EmployeeException();
-
-        Employee employee = employeeRepo.findById(id).orElse(new Employee());
-        Employee manager = employeeRepo.findById(employee.getManagerId()).orElse(null);
-        List<Employee> colleague = employeeRepo.getEmployeesByManagerIdAndIdIsNotLike(employee.getManagerId(), id);
-        List<Employee> reportingTo = employeeRepo.getEmployeeByManagerId(id);
-
-        colleague.sort(sortEmployee);
-        reportingTo.sort(sortEmployee);
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("employee", employee);
-        if (manager != null)
-            map.put("manager", manager);
-        map.put("colleagues", colleague);
-        map.put("subordinates", reportingTo);
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        employeeValidation.validId(id);
+        return new ResponseEntity<>(employeeService.getEmployeeOrgChart(id), HttpStatus.OK);
     }
 
     @PostMapping("")
-    public ResponseEntity<Employee> addEmployee(@Valid @RequestBody Employee employee) {
-        if (employee.getId() != null)
-            throw new EmployeeException("employeeId can`t define", HttpStatus.BAD_REQUEST);
-        if (employee.getManagerId() == null)
-            throw new EmployeeException("managerId Not found", HttpStatus.BAD_REQUEST);
-        validateEmployeeDesignation(employee);
-
-        employeeRepo.save(employee);
-        return new ResponseEntity<>(employee, HttpStatus.CREATED);
+    @JsonView(EmployeeJsonView.EmployeeExternal.class)
+    public ResponseEntity<Employee> addEmployee(@Valid @RequestBody EmployeeAdd employeeAdd) {
+        Employee employee = employeeService.convertToEmployee(employeeAdd);
+        employeeValidation.isEmployeeAddDataValid(employee);
+        return new ResponseEntity<>(employeeService.addEmployeeDetails(employee), HttpStatus.CREATED);
     }
 
-    @Transactional
     @PutMapping("{id}")
-    public ResponseEntity<Employee> updateOrReplaceEmployee(@PathVariable("id") @Min(1) int id, @Valid @RequestBody ReplaceWrapper wrapper) {
-        if (!employeeRepo.existsById(id))
-            throw new EmployeeException();
-        if (wrapper.getId() != null)
-            throw new EmployeeException("employeeId can`t define in Json", HttpStatus.BAD_REQUEST);
+    @JsonView(EmployeeJsonView.EmployeeInternal.class)
+    public ResponseEntity<Employee> updateOrReplaceEmployee(@PathVariable("id") @Min(1) int id, @Valid @RequestBody EmployeeReplace employeeReplace) {
+        employeeValidation.validId(id);
 
-        Employee employee;
-        if (wrapper.getManagerId() == null)
-            employee = new Employee(wrapper.getName(), employeeRepo.getOne(id).getManagerId(), wrapper.getJobTitle());
-        else
-            employee = new Employee(wrapper.getName(), wrapper.getManagerId(), wrapper.getJobTitle());
+        if (employeeReplace.getManagerId() == null)
+            employeeReplace.setManagerId(employeeService.getEmployee(id).getManagerId());
 
-        Designation designation = designationRepo.getDesignationByName(employee.getJobTitle());
-        //Validation for Manager and Employee Designation
-        validateEmployeeDesignation(employee);
+        Employee employee = employeeService.convertToEmployee(employeeReplace);
+        employeeValidation.isEmployeeDataUpdatable(id, employee);
 
-        // Validation for Employee Designation and Employees Reporting To
-        Set<String> jobTitles = new HashSet<>();
-        employeeRepo.getEmployeeByManagerId(id).forEach((Employee e) -> jobTitles.add(e.getJobTitle()));
-        Set<Integer> levels = new HashSet<>();
-        designationRepo.getDesignationsByNameIn(jobTitles).forEach((Designation d) -> levels.add(d.getLevel()));
-
-        if (levels.size() != 0 && designation.getLevel() >= Collections.min(levels))
-            throw new DesignationException("Can`t make Lower or equal Level Employee to Higher Level Employee Supervisor", HttpStatus.BAD_REQUEST);
-
-        // Creating aur Update Employee Data
-        if (wrapper.getReplace()) {
-            employee = employeeRepo.save(employee);
-            employeeRepo.updateManagerIdOfEmployees(id, employee.getId());
-        } else {
-            employee.setId(id);
-            employeeRepo.save(employee);
-        }
-        return new ResponseEntity<>(employee, HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.updateOrReplaceEmployeeDetails(id, employee, employeeReplace.getReplace()), HttpStatus.OK);
     }
 
-    @Transactional
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable("id") int id) {
-        if (id < 1)
-            throw new EmployeeException("Employee not found", HttpStatus.BAD_REQUEST);
-        if (!employeeRepo.existsById(id)) {
-            throw new EmployeeException("Employee not found", HttpStatus.NOT_FOUND);
-        }
-
-        Employee employee = employeeRepo.getOne(id);
-        if (employee.getManagerId() == -1 && employeeRepo.countEmployeesByManagerId(id) != 0) {
+        if (employeeValidation.isDeletableEmployee(id)) {
+            employeeService.deleteEmployeeData(id);
+            return new ResponseEntity<>("Employee Deleted", HttpStatus.NO_CONTENT);
+        } else {
             throw new EmployeeException("This Employee Can`t be Deleted without replacing him/her", HttpStatus.BAD_REQUEST);
         }
-
-        employeeRepo.updateManagerIdOfEmployees(id, employee.getManagerId());
-        employeeRepo.delete(employee);
-        return new ResponseEntity<>("Employee Deleted", HttpStatus.NO_CONTENT);
-    }
-
-    private void validateEmployeeDesignation(Employee employee) {
-        Designation designation = designationRepo.getDesignationByName(employee.getJobTitle());
-        Designation managerDesignation = designationRepo
-                .getDesignationByName(employeeRepo.findById(employee.getManagerId()).orElse(new Employee()).getJobTitle());
-        if (designation == null)
-            throw new DesignationException("Designation Not Found", HttpStatus.BAD_REQUEST);
-        else if ((employee.getManagerId() == -1 && designation.getLevel() != 1) || (employee.getManagerId() != -1 && managerDesignation == null))
-            throw new EmployeeException("Not a Valid Manager ID", HttpStatus.BAD_REQUEST);
-        else if (managerDesignation != null && designation.getLevel() <= managerDesignation.getLevel())
-            throw new DesignationException("Can`t assign lower or equal level supervisor", HttpStatus.BAD_REQUEST);
     }
 }

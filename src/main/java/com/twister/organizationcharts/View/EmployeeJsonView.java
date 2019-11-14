@@ -1,9 +1,15 @@
 package com.twister.organizationcharts.View;
 
 public class EmployeeJsonView {
-    public static class Employee {
+    // To Display Employee id name and JobTitle
+    public static class EmployeeView {
     }
 
-    public static class EmployeeExternal extends Employee {
+    // To Display Employee id, name and jobTitle
+    public static class EmployeeExternal extends EmployeeView {
+    }
+
+    // To Display Employee id, name, jobTile, managerId
+    public static class EmployeeInternal extends EmployeeView {
     }
 }

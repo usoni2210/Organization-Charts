@@ -1,4 +1,4 @@
-package com.twister.organizationcharts.Exceptions;
+package com.twister.organizationcharts.Model.Exceptions;
 
 import org.springframework.http.HttpStatus;
 

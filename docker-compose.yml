@@ -9,16 +9,18 @@ services:
       MYSQL_PASSWORD: '1653'
       MYSQL_DATABASE: 'organization_charts'
 
+
   app:
     build: .
     restart: on-failure
     ports:
       - "8080:8080"
-    depends_on:
-      - start_dependencies
-
-  start_dependencies:
-    image: dadarek/wait-for-dependencies
-    depends_on:
-      - mysql-server
-    command: mysql-server:3306
+    environment:
+      spring.datasource.platform: 'mysql'
+      spring.datasource.url: 'jdbc:mysql://mysql-server:3306/organization_charts'
+      spring.datasource.username: 'twister'
+      spring.datasource.password: '1653'
+      spring.jpa.properties.hibernate.dialect: 'org.hibernate.dialect.MySQL5Dialect'
+      spring.datasource.driver-class-name: 'com.mysql.cj.jdbc.Driver'
+        spring.datasource.initialization-mode: 'always'
+        spring.jpa.hibernate.ddl-auto: 'create'

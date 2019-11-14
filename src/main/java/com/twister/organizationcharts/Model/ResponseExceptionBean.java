@@ -1,13 +1,13 @@
-package com.twister.organizationcharts.ExceptionHandler;
+package com.twister.organizationcharts.Model;
 
 import java.util.Date;
 
-public class ResponseException {
+public class ResponseExceptionBean {
     private String details;
     private String message;
     private Date timestamp;
 
-    public ResponseException(String message, String details) {
+    public ResponseExceptionBean(String message, String details) {
         this.details = details;
         this.message = message;
         this.timestamp = new Date();
