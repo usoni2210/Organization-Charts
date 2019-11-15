@@ -1,4 +1,4 @@
-/*INSERT INTO designation (DESIGNATION_ID, NAME, LEVEL)
+INSERT INTO designation (DESIGNATION_ID, NAME, LEVEL)
 VALUES (1, 'Director', 1),
        (2, 'Manager', 2),
        (3, 'Lead', 3),
@@ -18,4 +18,3 @@ VALUES (1, 'Thor', 1, -1),
        (8, 'Ant Man', 3, 4),
        (9, 'SpiderMan', 7, 2),
        (10, 'BlackWidow', 4, 3);
- */
