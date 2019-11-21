@@ -1,10 +1,10 @@
-package com.twister.organizationcharts.Model.Exceptions;
+package com.twister.organizationcharts.model.exceptions;
 
 import org.springframework.http.HttpStatus;
 
 public class EmployeeException extends RuntimeException {
 
-    private HttpStatus status;
+    private final HttpStatus status;
 
     public EmployeeException() {
         super("Employee : Employee Not Found");

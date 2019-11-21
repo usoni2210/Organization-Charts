@@ -1,14 +1,13 @@
 package com.twister.organizationcharts.services;
 
-import com.twister.organizationcharts.Model.Designation;
-import com.twister.organizationcharts.Model.DesignationAdd;
-import com.twister.organizationcharts.Repository.DesignationRepo;
+import com.twister.organizationcharts.model.Designation;
+import com.twister.organizationcharts.model.input.DesignationAdd;
+import com.twister.organizationcharts.repository.DesignationRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class DesignationService {
@@ -19,14 +18,19 @@ public class DesignationService {
     }
 
     public List<Designation> getAllDesignation() {
-        return designationRepo.findAll();
+        List<Designation> designationList = designationRepo.findAll();
+        designationList.sort(Designation::compareTo);
+        return designationList;
     }
 
     public Designation getDesignation(int id) {
         return designationRepo.findById(id).orElse(null);
     }
 
-    public Designation addDesignationData(Designation designation) {
+    @Transactional
+    public Designation addDesignationData(Designation designation, boolean parallel) {
+        if (!parallel)
+            designationRepo.updateDesignationLevel(designation.getLevel());
         return designationRepo.save(designation);
     }
 
@@ -36,14 +40,12 @@ public class DesignationService {
     }
 
     public Designation convertToDesignation(DesignationAdd designationAdd) {
-        return new Designation(designationAdd.getName(), designationAdd.getLevel());
+        Designation superior = designationRepo.findById(designationAdd.getSuperiorId()).orElse(null);
+        int superiorLevel = superior != null ? superior.getLevel() : 0;
+        return new Designation(designationAdd.getName(), superiorLevel + 1);
     }
 
-    Designation getDesignationByName(String jobTitle) {
-        return designationRepo.getDesignationByName(jobTitle);
-    }
-
-    List<Designation> getDesignationsByNameIn(Set<String> jobTitles) {
-        return designationRepo.getDesignationsByNameIn(jobTitles);
+    public boolean isTopDesignation(Designation designation) {
+        return designation.getId() == designationRepo.getFirstByOrderByLevel().getId();
     }
 }

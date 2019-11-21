@@ -1,4 +1,4 @@
-package com.twister.organizationcharts.Configuration;
+package com.twister.organizationcharts.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

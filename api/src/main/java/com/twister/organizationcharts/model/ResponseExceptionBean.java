@@ -1,4 +1,4 @@
-package com.twister.organizationcharts.Model;
+package com.twister.organizationcharts.model;
 
 import java.util.Date;
 

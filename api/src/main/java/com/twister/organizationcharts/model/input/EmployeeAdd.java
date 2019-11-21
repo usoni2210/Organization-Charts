@@ -1,4 +1,4 @@
-package com.twister.organizationcharts.Model;
+package com.twister.organizationcharts.model.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -52,5 +52,14 @@ public class EmployeeAdd {
 
     public void setManagerId(Integer managerId) {
         this.managerId = managerId;
+    }
+
+    @Override
+    public String toString() {
+        return "EmployeeAdd{" +
+                "name='" + name + '\'' +
+                ", managerId=" + managerId +
+                ", jobTitle='" + jobTitle + '\'' +
+                '}';
     }
 }

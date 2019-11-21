@@ -1,4 +1,4 @@
-package com.twister.organizationcharts.View;
+package com.twister.organizationcharts.view;
 
 public class EmployeeJsonView {
     // To Display Employee id name and JobTitle

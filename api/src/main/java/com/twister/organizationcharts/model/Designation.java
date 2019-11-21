@@ -1,4 +1,4 @@
-package com.twister.organizationcharts.Model;
+package com.twister.organizationcharts.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -6,11 +6,11 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "designation")
-public class Designation {
+public class Designation implements Comparable<Designation> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Min(1)
-    private int designationId;
+    @Min(value = 0, message = "Designation Id must be greater then 0")
+    private int id;
     @Size(min = 2, message = "Designation Name should have atleast 2 Characters")
     private String name;
     @Min(value = 1, message = "Designation minimum value should be 1")
@@ -24,24 +24,24 @@ public class Designation {
         this.level = level;
     }
 
-    public int getDesignationId() {
-        return designationId;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int designationId) {
+        this.id = designationId;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public void setDesignationId(int designationId) {
-        this.designationId = designationId;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public void setLevel(int level) {
@@ -51,9 +51,18 @@ public class Designation {
     @Override
     public String toString() {
         return "Designation{" +
-                "designationId=" + designationId +
+                "designationId=" + id +
                 ", name='" + name + '\'' +
                 ", level=" + level +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Designation o) {
+        int diffLevel = this.getLevel() - o.getLevel();
+        if (diffLevel == 0) {
+            return this.getName().compareTo(o.getName());
+        } else
+            return diffLevel;
     }
 }

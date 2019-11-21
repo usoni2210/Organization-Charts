@@ -1,11 +1,11 @@
-package com.twister.organizationcharts.Model.Exceptions;
+package com.twister.organizationcharts.model.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class DesignationException extends RuntimeException {
-    private HttpStatus status;
+    private final HttpStatus status;
 
     public DesignationException() {
         super("Designation : Designation Not Found");

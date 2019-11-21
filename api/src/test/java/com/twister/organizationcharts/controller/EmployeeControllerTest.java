@@ -1,12 +1,9 @@
-package com.twister.organizationcharts.Controller;
-
+package com.twister.organizationcharts.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twister.organizationcharts.Model.EmployeeAdd;
-import com.twister.organizationcharts.Model.EmployeeReplace;
-import com.twister.organizationcharts.Repository.DesignationRepo;
-import com.twister.organizationcharts.Repository.EmployeeRepo;
+import com.twister.organizationcharts.model.input.EmployeeAdd;
+import com.twister.organizationcharts.model.input.EmployeeReplace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +15,6 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.testng.Assert.assertEquals;
 
@@ -29,12 +24,6 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private EmployeeRepo employeeRepo;
-    @Autowired
-    private DesignationRepo designationRepo;
-
 
     //Get All Employee Details
     @Test
@@ -187,11 +176,14 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
 
     @Test
     void addEmployeeWithNewDirector() throws Exception {
-        EmployeeAdd employee = new EmployeeAdd("Umesh", -1, "Director");
+        EmployeeAdd employee = new EmployeeAdd("Umesh", 0, "Director");
 
         String inputJson = mapToJson(employee);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/rest/employees")
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
+
+
+        System.out.println(mvcResult.getResponse().getContentAsString());
 
         int status = mvcResult.getResponse().getStatus();
         assertEquals(201, status);
@@ -208,7 +200,6 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
         int status = mvcResult.getResponse().getStatus();
         assertEquals(201, status);
     }
-
 
     // Update or Replace Employee
     @Test
@@ -423,10 +414,5 @@ public class EmployeeControllerTest extends AbstractTestNGSpringContextTests {
     private String mapToJson(Object obj) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(obj);
-    }
-
-    private <T> T mapFromJson(String json, Class<T> clazz) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(json, clazz);
     }
 }

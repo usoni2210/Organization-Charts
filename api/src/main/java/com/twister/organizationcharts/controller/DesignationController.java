@@ -1,8 +1,8 @@
-package com.twister.organizationcharts.Controller;
+package com.twister.organizationcharts.controller;
 
-import com.twister.organizationcharts.Model.Designation;
-import com.twister.organizationcharts.Model.DesignationAdd;
-import com.twister.organizationcharts.Model.Exceptions.DesignationException;
+import com.twister.organizationcharts.model.Designation;
+import com.twister.organizationcharts.model.exceptions.DesignationException;
+import com.twister.organizationcharts.model.input.DesignationAdd;
 import com.twister.organizationcharts.services.DesignationService;
 import com.twister.organizationcharts.services.DesignationValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class DesignationController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Designation>> getListOfDesignation() {
+    public ResponseEntity<List<Designation>> getListOfDesignations() {
         return new ResponseEntity<>(designationService.getAllDesignation(), HttpStatus.OK);
     }
 
@@ -37,7 +37,9 @@ public class DesignationController {
 
     @PostMapping("")
     public ResponseEntity<Designation> addDesignation(@Valid @RequestBody DesignationAdd designationAdd) {
-        return new ResponseEntity<>(designationService.addDesignationData(designationService.convertToDesignation(designationAdd)), HttpStatus.CREATED);
+        if (designationAdd.getSuperiorId() == null || designationAdd.getSuperiorId() != 0)
+            designationValidation.validId(designationAdd.getSuperiorId());
+        return new ResponseEntity<>(designationService.addDesignationData(designationService.convertToDesignation(designationAdd), designationAdd.getParallel()), HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id}")

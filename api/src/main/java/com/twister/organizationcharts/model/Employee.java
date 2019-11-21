@@ -1,9 +1,8 @@
-package com.twister.organizationcharts.Model;
+package com.twister.organizationcharts.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.twister.organizationcharts.View.EmployeeJsonView;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -14,46 +13,41 @@ import javax.validation.constraints.Pattern;
 @Entity
 @Table(name = "employee")
 @ApiModel(description = "Employee Model for Handle Employee Details")
-public class Employee {
+public class Employee implements Comparable<Employee> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(hidden = true)
-    @JsonView(EmployeeJsonView.EmployeeExternal.class)
     private Integer id;
 
     @NotNull(message = "Employee Name should not be null")
     @Pattern(regexp = "[A-Za-z\\s]{2,}", message = "Name should only contain Alphabets and have atleast 2 Characters")
-    @JsonView(EmployeeJsonView.EmployeeView.class)
     @JsonProperty(required = true)
     @ApiModelProperty(notes = "Should be valid Name and have atleast 2 characters")
     private String name;
 
     @JsonProperty(required = true)
-    @JsonView(EmployeeJsonView.EmployeeInternal.class)
-    @ApiModelProperty(notes = "Should be not null and valid id of Employee")
-    private Integer managerId;
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    @ApiModelProperty(notes = "Should be not null and valid Employee ID")
+    @JsonIgnoreProperties(value = {"manager"})
+    private Employee manager;
 
-    @JsonProperty(required = true)
     @Transient
-    @JsonView(EmployeeJsonView.EmployeeView.class)
-    @ApiModelProperty(notes = "Should be not null and a valid Designation Name")
     private String jobTitle;
 
-    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "DESIGNATION_ID", nullable = false)
-    @JsonView(EmployeeJsonView.EmployeeView.class)
+    @JsonIgnore
+    @JoinColumn(name = "designation_id", nullable = false)
     private Designation designation;
 
     public Employee() {
     }
 
-    public Employee(String name, Integer managerId, Designation designation) {
+    public Employee(String name, Employee manager, Designation designation) {
         this.name = name;
-        this.managerId = managerId;
+        this.manager = manager;
         this.designation = designation;
-        if (designation != null)
-            this.jobTitle = designation.getName();
     }
 
     public Integer getId() {
@@ -68,8 +62,12 @@ public class Employee {
         return name;
     }
 
-    public Integer getManagerId() {
-        return managerId;
+    public Employee getManager() {
+        return manager;
+    }
+
+    public Designation getDesignation() {
+        return designation;
     }
 
     public String getJobTitle() {
@@ -78,17 +76,22 @@ public class Employee {
         return jobTitle;
     }
 
-    public Designation getDesignation() {
-        return designation;
-    }
-
     @Override
     public String toString() {
         return "Employee{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", managerId=" + managerId +
+                ", managerId=" + manager +
                 ", designation=" + designation +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Employee o) {
+        int diffLevel = this.getDesignation().getLevel() - o.getDesignation().getLevel();
+        if (diffLevel == 0) {
+            return this.getName().compareTo(o.getName());
+        } else
+            return diffLevel;
     }
 }

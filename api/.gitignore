@@ -26,3 +26,6 @@ hs_err_pid*
 organization-charts.iml
 main.sh
 target
+mvnw
+mvnw.cmd
+*.sql

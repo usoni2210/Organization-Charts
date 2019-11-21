@@ -1,8 +1,8 @@
-package com.twister.organizationcharts.ExceptionHandler;
+package com.twister.organizationcharts.exceptionhandler;
 
-import com.twister.organizationcharts.Model.Exceptions.DesignationException;
-import com.twister.organizationcharts.Model.Exceptions.EmployeeException;
-import com.twister.organizationcharts.Model.ResponseExceptionBean;
+import com.twister.organizationcharts.model.ResponseExceptionBean;
+import com.twister.organizationcharts.model.exceptions.DesignationException;
+import com.twister.organizationcharts.model.exceptions.EmployeeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,6 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleALLExceptions(Exception ex, WebRequest webRequest) {
         ResponseExceptionBean exceptionResponse = new ResponseExceptionBean(ex.toString(), webRequest.getDescription(false));
-        ex.printStackTrace();
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -39,7 +38,6 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
                 Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage(),
                 request.getDescription(false)
         );
-        ex.printStackTrace();
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 

@@ -1,4 +1,4 @@
-package com.twister.organizationcharts.Model;
+package com.twister.organizationcharts.model.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.validation.annotation.Validated;

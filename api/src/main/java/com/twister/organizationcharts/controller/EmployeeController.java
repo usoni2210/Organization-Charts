@@ -1,11 +1,9 @@
-package com.twister.organizationcharts.Controller;
+package com.twister.organizationcharts.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.twister.organizationcharts.Model.Employee;
-import com.twister.organizationcharts.Model.EmployeeAdd;
-import com.twister.organizationcharts.Model.EmployeeReplace;
-import com.twister.organizationcharts.Model.Exceptions.EmployeeException;
-import com.twister.organizationcharts.View.EmployeeJsonView;
+import com.twister.organizationcharts.model.Employee;
+import com.twister.organizationcharts.model.exceptions.EmployeeException;
+import com.twister.organizationcharts.model.input.EmployeeAdd;
+import com.twister.organizationcharts.model.input.EmployeeReplace;
 import com.twister.organizationcharts.services.EmployeeService;
 import com.twister.organizationcharts.services.EmployeeValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Map;
 
@@ -31,20 +28,17 @@ public class EmployeeController {
     }
 
     @GetMapping("")
-    @JsonView(EmployeeJsonView.EmployeeExternal.class)
     public ResponseEntity<List<Employee>> getALLEmployeesInfo() {
         return new ResponseEntity<>(employeeService.getEmployeeList(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    @JsonView(EmployeeJsonView.EmployeeExternal.class)
     public ResponseEntity<Map<String, Object>> getEmployeeInfo(@PathVariable("id") int id) {
         employeeValidation.validId(id);
         return new ResponseEntity<>(employeeService.getEmployeeOrgChart(id), HttpStatus.OK);
     }
 
     @PostMapping("")
-    @JsonView(EmployeeJsonView.EmployeeExternal.class)
     public ResponseEntity<Employee> addEmployee(@Valid @RequestBody EmployeeAdd employeeAdd) {
         Employee employee = employeeService.convertToEmployee(employeeAdd);
         employeeValidation.isEmployeeAddDataValid(employee);
@@ -52,26 +46,24 @@ public class EmployeeController {
     }
 
     @PutMapping("{id}")
-    @JsonView(EmployeeJsonView.EmployeeInternal.class)
-    public ResponseEntity<Employee> updateOrReplaceEmployee(@PathVariable("id") @Min(1) int id, @Valid @RequestBody EmployeeReplace employeeReplace) {
+    public ResponseEntity<Employee> updateOrReplaceEmployee(@PathVariable("id") int id, @Valid @RequestBody EmployeeReplace employeeReplace) {
         employeeValidation.validId(id);
-
+        Employee oldEmployee = employeeService.getEmployee(id);
         if (employeeReplace.getManagerId() == null)
-            employeeReplace.setManagerId(employeeService.getEmployee(id).getManagerId());
+            employeeReplace.setManagerId(oldEmployee.getManager().getId());
 
         Employee employee = employeeService.convertToEmployee(employeeReplace);
         employeeValidation.isEmployeeDataUpdatable(id, employee);
 
-        return new ResponseEntity<>(employeeService.updateOrReplaceEmployeeDetails(id, employee, employeeReplace.getReplace()), HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.updateOrReplaceEmployeeDetails(oldEmployee, employee, employeeReplace.getReplace()), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteEmployee(@PathVariable("id") int id) {
-        if (employeeValidation.isDeletableEmployee(id)) {
-            employeeService.deleteEmployeeData(id);
-            return new ResponseEntity<>("Employee Deleted", HttpStatus.NO_CONTENT);
-        } else {
+        if (!employeeValidation.isDeletableEmployee(id))
             throw new EmployeeException("This Employee Can`t be Deleted without replacing him/her", HttpStatus.BAD_REQUEST);
-        }
+
+        employeeService.deleteEmployeeData(id);
+        return new ResponseEntity<>("Employee Deleted", HttpStatus.NO_CONTENT);
     }
 }
