@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: org-charts-deployment
+  namespace: org-charts-ns
+  labels:
+    component: org-charts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: org-charts
+  template:
+    metadata:
+      namespace: org-chart-ns
+      labels:
+        component: org-charts
+    spec:
+      containers:
+        - name: org-charts
+          image: twister22/organization-charts:test
+          ports:
+            - containerPort: 8080
+          env:
+            - name: spring.datasource.url
+              value: 'jdbc:mysql://mysql-cluster-ip-service:3306/organization_charts'
+            - name: spring.datasource.username
+              value: 'twister'
+            - name: spring.datasource.password
+              value: '1653'
+            - name: spring.jpa.properties.hibernate.dialect
+              value: 'org.hibernate.dialect.MySQL5Dialect'
+            - name: spring.datasource.initialization-mode
+              value: 'always'
+            - name: spring.jpa.hibernate.ddl-auto
+              value: 'update'
