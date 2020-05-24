@@ -6,7 +6,7 @@
 
   <groupId>com.twister</groupId>
   <artifactId>organization-charts</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>v1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Organization-Charts</name>
@@ -18,14 +18,12 @@
 
   <properties>
     <java.version>1.8</java.version>
-    <docker.push.registry>registry.hub.docker.com/twister22</docker.push.registry>
+    <docker.push.registry>registry.hub.docker.com</docker.push.registry>
     <docker.context>${project.basedir}</docker.context>
     <image.name>organization-chart</image.name>
-    <image.version>1.0</image.version>
+    <image.version>v1.0</image.version>
     <io.fabric.version>0.33.0</io.fabric.version>
-    <mysql.connector.version>8.0.18</mysql.connector.version>
-    <h2database.version>1.4.199</h2database.version>
-    <springframework.boot.version>2.2.0.RELEASE</springframework.boot.version>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -35,55 +33,14 @@
     <url>https://github.com/usoni2210/Organization-Charts</url>
   </scm>
 
-  <repositories>
-    <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
-    </repository>
-  </repositories>
-
-  <dependencyManagement>
-    <dependencies>
-      <!-- Spring Boot Dependency -->
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-jpa</artifactId>
-        <version>${springframework.boot.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-        <version>${springframework.boot.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-test</artifactId>
-        <version>${springframework.boot.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-devtools</artifactId>
-        <version>${springframework.boot.version}</version>
-        <scope>runtime</scope>
-        <optional>true</optional>
-      </dependency>
-
-      <!-- MySQL Dependency -->
-      <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>${mysql.connector.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>${h2database.version}</version>
-        <scope>runtime</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+  <distributionManagement>
+      <repository>
+        <id>github</id>
+        <name>Github Package</name>
+        <url>file://${project.build.directory}/mvn-repo</url>
+<!--        <url>https://maven.pkg.github.com/usoni2210/Organization-Charts</url>-->
+      </repository>
+  </distributionManagement>
 
   <build>
     <pluginManagement>
@@ -158,11 +115,6 @@
               </configuration>
             </execution>
           </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>${springframework.boot.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>

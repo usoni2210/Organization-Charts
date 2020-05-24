@@ -6,38 +6,58 @@
   <parent>
     <groupId>com.twister</groupId>
     <artifactId>organization-charts</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>v1.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>com.twister.organization-charts</groupId>
   <artifactId>api</artifactId>
-  <packaging>jar</packaging>
 
   <properties>
-    <image.name>organization-chart-api</image.name>
+    <image.name>twister22/organization-chart-api</image.name>
+    <mysql.connector.version>8.0.18</mysql.connector.version>
+    <h2database.version>1.4.199</h2database.version>
+    <springframework.boot.version>2.2.0.RELEASE</springframework.boot.version>
   </properties>
 
   <dependencies>
+    <!-- Spring Boot Dependency -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <version>${springframework.boot.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-devtools</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
+      <version>${springframework.boot.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <version>${springframework.boot.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <version>${springframework.boot.version}</version>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- MySQL Dependency -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql.connector.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2database.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
@@ -60,10 +80,6 @@
       <artifactId>springfox-swagger-ui</artifactId>
       <version>2.9.2</version>
     </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-    </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.testng/testng -->
     <dependency>
@@ -72,15 +88,10 @@
       <version>6.14.3</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>docker-maven-plugin</artifactId>
@@ -91,7 +102,7 @@
                 <image>
                   <build>
                     <arg>
-                      <JarFileName>${project.artifactId}-${project.version}.${project.packaging}</JarFileName>
+                      <JarFileName>${project.artifactId}-${project.version}.jar</JarFileName>
                     </arg>
                   </build>
                 </image>
@@ -108,6 +119,11 @@
           <source>8</source>
           <target>8</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${springframework.boot.version}</version>
       </plugin>
     </plugins>
   </build>

@@ -1,0 +1,20 @@
+{{- if .Values.org_charts.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  namespace: {{ .Values.org_charts.namespace }}
+  name: {{.Values.org_charts.name}}-ingress
+  {{- with .Values.org_charts.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: 'twister.ems.com'
+      http:
+        paths:
+        - path: /rest
+          backend:
+            serviceName: {{.Values.org_charts.api.name}}-service
+            servicePort: {{ .Values.org_charts.api.service.port }}
+{{- end -}}
