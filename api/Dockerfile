@@ -1,5 +1,5 @@
 FROM openjdk:8
 
-ADD target/organization-charts.jar app.jar
+ADD target/${JarFileName} app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
