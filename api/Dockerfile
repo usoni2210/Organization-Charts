@@ -1,5 +1,6 @@
-FROM openjdk:8
+FROM openjdk:8-jre-alpine
 
-ADD target/api.jar api.jar
+ADD target/api.jar /app/api.jar
+EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "api.jar"]
+ENTRYPOINT ["java", "-jar", "/app/api.jar"]

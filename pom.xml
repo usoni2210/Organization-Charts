@@ -18,7 +18,6 @@
 
   <properties>
     <java.version>1.8</java.version>
-    <docker.push.registry>registry.hub.docker.com</docker.push.registry>
     <docker.context>${project.basedir}</docker.context>
     <image.name>organization-chart</image.name>
     <image.version>v1.0</image.version>
