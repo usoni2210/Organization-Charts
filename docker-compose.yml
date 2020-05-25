@@ -1,7 +1,7 @@
 version: '3'
 services:
   mysql-server:
-    image: mysql:5.7.28
+    image: mysql:5.7
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: '1994'
@@ -11,7 +11,7 @@ services:
 
 
   app:
-    build: .
+    build: api
     restart: on-failure
     ports:
       - "8080:8080"
@@ -22,5 +22,5 @@ services:
       spring.datasource.password: '1653'
       spring.jpa.properties.hibernate.dialect: 'org.hibernate.dialect.MySQL5Dialect'
       spring.datasource.driver-class-name: 'com.mysql.cj.jdbc.Driver'
-        spring.datasource.initialization-mode: 'always'
-        spring.jpa.hibernate.ddl-auto: 'create'
+      spring.datasource.initialization-mode: 'always'
+      spring.jpa.hibernate.ddl-auto: 'create'
