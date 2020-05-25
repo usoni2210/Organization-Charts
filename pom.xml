@@ -23,7 +23,9 @@
     <image.name>organization-chart</image.name>
     <image.version>v1.0</image.version>
     <io.fabric.version>0.33.0</io.fabric.version>
-
+    <mysql.connector.version>8.0.18</mysql.connector.version>
+    <h2database.version>1.4.199</h2database.version>
+    <springframework.boot.version>2.2.0.RELEASE</springframework.boot.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -38,9 +40,45 @@
         <id>github</id>
         <name>Github Package</name>
         <url>file://${project.build.directory}/mvn-repo</url>
-<!--        <url>https://maven.pkg.github.com/usoni2210/Organization-Charts</url>-->
+<!--        <url>https://maven.pkg.github.com/usoni2210</url>-->
       </repository>
   </distributionManagement>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Spring Boot Dependency -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+        <version>${springframework.boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${springframework.boot.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <version>${springframework.boot.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-devtools</artifactId>
+        <version>${springframework.boot.version}</version>
+        <scope>runtime</scope>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${springframework.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <pluginManagement>
@@ -68,6 +106,23 @@
           </executions>
         </plugin>
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>properties-maven-plugin</artifactId>
+          <version>1.0.0</version>
+          <executions>
+            <execution>
+              <id>generate-module-properties</id>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>write-project-properties</goal>
+              </goals>
+              <configuration>
+                <outputFile>${project.build.directory}/mvn-build.properties</outputFile>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
           <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>
           <version>${io.fabric.version}</version>
@@ -86,7 +141,7 @@
                     <name>${image.name}:${project.version}</name>
                     <build>
                       <tags>
-                        <tag>${image.version}_${buildNumber}_${timestamp}</tag>
+                        <tag>${scmBranch}_${buildNumber}_${timestamp}</tag>
                       </tags>
                       <buildOptions>
                         <labels>{"com.twister.project":"${project.name}"}</labels>
@@ -95,23 +150,6 @@
                     </build>
                   </image>
                 </images>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>properties-maven-plugin</artifactId>
-          <version>1.0.0</version>
-          <executions>
-            <execution>
-              <id>generate-module-properties</id>
-              <phase>generate-resources</phase>
-              <goals>
-                <goal>write-project-properties</goal>
-              </goals>
-              <configuration>
-                <outputFile>${project.build.directory}/mvn-build.properties</outputFile>
               </configuration>
             </execution>
           </executions>
@@ -130,6 +168,4 @@
       </plugin>
     </plugins>
   </build>
-
-
 </project>

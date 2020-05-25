@@ -1,5 +1,5 @@
 FROM openjdk:8
 
-ADD target/${JarFileName} app.jar
+ADD target/api.jar api.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "api.jar"]

@@ -11,13 +11,12 @@
   </parent>
 
   <groupId>com.twister.organization-charts</groupId>
+  <version>v1.0-SNAPSHOT</version>
   <artifactId>api</artifactId>
+  <packaging>jar</packaging>
 
   <properties>
     <image.name>twister22/organization-chart-api</image.name>
-    <mysql.connector.version>8.0.18</mysql.connector.version>
-    <h2database.version>1.4.199</h2database.version>
-    <springframework.boot.version>2.2.0.RELEASE</springframework.boot.version>
   </properties>
 
   <dependencies>
@@ -25,25 +24,18 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <version>${springframework.boot.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>${springframework.boot.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <version>${springframework.boot.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
-      <version>${springframework.boot.version}</version>
-      <scope>runtime</scope>
-      <optional>true</optional>
     </dependency>
 
     <!-- MySQL Dependency -->
@@ -91,25 +83,11 @@
   </dependencies>
 
   <build>
+    <finalName>api</finalName>
     <plugins>
       <plugin>
         <groupId>io.fabric8</groupId>
         <artifactId>docker-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <configuration>
-              <images>
-                <image>
-                  <build>
-                    <arg>
-                      <JarFileName>${project.artifactId}-${project.version}.jar</JarFileName>
-                    </arg>
-                  </build>
-                </image>
-              </images>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -124,6 +102,13 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${springframework.boot.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
