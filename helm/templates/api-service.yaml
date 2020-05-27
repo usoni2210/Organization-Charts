@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.org_charts.api.name}}-service
+  namespace: {{ .Values.org_charts.namespace }}
+spec:
+  type: {{ .Values.org_charts.api.service.type }}
+  selector:
+    app.kubernetes.io/name: {{ .Values.org_charts.api.name }}-deployment
+    app.kubernetes.io/part-of: {{ .Values.org_charts.name }}
+
+  ports:
+    - port: {{ .Values.org_charts.api.service.port }}
+      targetPort: 8080
+

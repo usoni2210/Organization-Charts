@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.org_charts.database.name }}-deployment
+  namespace: {{ .Values.org_charts.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.org_charts.database.name }}-deployment
+    app.kubernetes.io/part-of: {{ .Values.org_charts.name }}
+spec:
+  {{- if not .Values.org_charts.autoscaling.enabled }}
+  replicas: {{ .Values.org_charts.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.org_charts.database.name }}-deployment
+      app.kubernetes.io/part-of: {{ .Values.org_charts.name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.org_charts.database.name }}-deployment
+        app.kubernetes.io/part-of: {{ .Values.org_charts.name }}
+    spec:
+      containers:
+        - name: '{{ .Values.org_charts.database.name }}-deployment'
+          image: '{{.Values.org_charts.database.image.url}}:{{.Values.org_charts.database.image.tag}}'
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: '{{.Values.org_charts.database.credentials.root_pwd}}'
+            - name: MYSQL_DATABASE
+              value: '{{ .Values.org_charts.database.credentials.database_name }}'
+            - name: MYSQL_USER
+              value: '{{.Values.org_charts.database.credentials.username }}'
+            - name: MYSQL_PASSWORD
+              value: '{{.Values.org_charts.database.credentials.password }}'
+          ports:
+            - containerPort: {{.Values.org_charts.database.service.port}}
+          volumeMounts:
+            - mountPath: {{.Values.org_charts.database.pvc_mount_path}}
+              name: mysql-storage
+          resources:
+            requests:
+              cpu: '200m'
+              memory: '512Mi'
+            limits:
+              cpu: '200m'
+              memory: '512Mi'
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.org_charts.pvc.name }}
