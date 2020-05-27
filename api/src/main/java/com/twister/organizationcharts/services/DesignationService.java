@@ -40,8 +40,12 @@ public class DesignationService {
     }
 
     public Designation convertToDesignation(DesignationAdd designationAdd) {
+        int superiorLevel;
         Designation superior = designationRepo.findById(designationAdd.getSuperiorId()).orElse(null);
-        int superiorLevel = superior != null ? superior.getLevel() : 0;
+        if (superior != null && designationAdd.getParallel())
+            superiorLevel = designationRepo.getFirstByLevelGreaterThanOrderByLevel(superior.getId()).getLevel();
+        else
+            superiorLevel = superior != null ? superior.getLevel() : 0;
         return new Designation(designationAdd.getName(), superiorLevel + 1);
     }
 

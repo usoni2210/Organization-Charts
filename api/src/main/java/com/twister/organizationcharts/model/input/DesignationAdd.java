@@ -43,7 +43,7 @@ public class DesignationAdd {
         this.superiorId = superiorId;
     }
 
-    public Boolean getParallel() {
+    public boolean getParallel() {
         return parallel;
     }
 

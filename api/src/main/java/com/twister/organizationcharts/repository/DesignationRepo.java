@@ -16,4 +16,6 @@ public interface DesignationRepo extends JpaRepository<Designation, Integer> {
     @Modifying
     @Query("UPDATE Designation SET level=level+1 WHERE level >= ?1")
     void updateDesignationLevel(int level);
+
+    Designation getFirstByLevelGreaterThanOrderByLevel(int id);
 }
