@@ -1,0 +1,56 @@
+global:
+  repository_url: 'twister22'
+
+org_charts:
+  name: org-charts
+  namespace: 'org-charts'
+  replicaCount: 1
+
+  api:
+    name: api
+    image:
+      url: 'organization-chart-api'
+      tag: 'v1.1-SNAPSHOT'
+      pullPolicy: Always
+    service:
+      type: ClusterIP
+      port: 8080
+
+  database:
+    enable: true
+    name: mysql
+    image:
+      url: 'mysql'
+      tag: '5.7'
+      pullPolicy: Always
+    service:
+      type: ClusterIP
+      port: 3306
+    credentials:
+      username: twister
+      password: '1653'
+      root_pwd: '1994'
+      database_name: 'organization_charts'
+    dialect: org.hibernate.dialect.MySQL5Dialect
+    database_url: 'jdbc:mysql://mysql-service:3306/organization_charts'
+    pvc_mount_path: /var/lib/mysql
+
+  pvc:
+    enable: true
+    name: mysql-pvc
+    storage: '3Gi'
+
+  ingress:
+    enabled: true
+    host: localhost
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+  autoscaling:
+    enabled: true
+    name: autoscaler
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80

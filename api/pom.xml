@@ -6,12 +6,12 @@
   <parent>
     <groupId>com.twister</groupId>
     <artifactId>organization-charts</artifactId>
-    <version>v1.0-SNAPSHOT</version>
+    <version>v1.1-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <groupId>com.twister.organization-charts</groupId>
-  <version>v1.0-SNAPSHOT</version>
+  <version>v1.1-SNAPSHOT</version>
   <artifactId>api</artifactId>
   <packaging>jar</packaging>
 

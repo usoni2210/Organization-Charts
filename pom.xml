@@ -6,7 +6,7 @@
 
   <groupId>com.twister</groupId>
   <artifactId>organization-charts</artifactId>
-  <version>v1.0-SNAPSHOT</version>
+  <version>v1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Organization-Charts</name>
@@ -20,7 +20,6 @@
     <java.version>1.8</java.version>
     <docker.context>${project.basedir}</docker.context>
     <image.name>organization-chart</image.name>
-    <image.version>v1.0</image.version>
     <io.fabric.version>0.33.0</io.fabric.version>
     <mysql.connector.version>8.0.18</mysql.connector.version>
     <h2database.version>1.4.199</h2database.version>

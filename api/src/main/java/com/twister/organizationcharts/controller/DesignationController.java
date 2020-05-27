@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/designation")
+@RequestMapping("/rest/designation")
 public class DesignationController {
     private final DesignationService designationService;
     private final DesignationValidation designationValidation;

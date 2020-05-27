@@ -1,0 +1,62 @@
+{{- if .Values.org_charts.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{.Values.org_charts.autoscaling.name}}-api
+  namespace: {{ .Values.org_charts.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.org_charts.autoscaling.name }}-api
+    app.kubernetes.io/part-of: {{ .Values.org_charts.name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{.Values.org_charts.api.name}}-deployment
+  minReplicas: {{ .Values.org_charts.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.org_charts.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.org_charts.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.org_charts.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.org_charts.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.org_charts.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+  {{- end }}
+
+---
+  {{- if .Values.org_charts.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{.Values.org_charts.autoscaling.name}}-db
+  namespace: {{ .Values.org_charts.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.org_charts.autoscaling.name }}-db
+    app.kubernetes.io/part-of: {{ .Values.org_charts.name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{.Values.org_charts.database.name}}-deployment
+  minReplicas: {{ .Values.org_charts.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.org_charts.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.org_charts.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.org_charts.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.org_charts.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.org_charts.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+  {{- end }}
