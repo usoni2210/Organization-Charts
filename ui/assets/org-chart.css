@@ -1,0 +1,42 @@
+.orgchart table.employee-box {
+    border-collapse: collapse;
+    padding: 8px;
+    margin: 0;
+    display: inline-block;
+}
+
+.orgchart .self-card {
+    background-color: yellowgreen;
+    border: 2px solid black;
+}
+
+.orgchart .others-card {
+    background-color: yellow;
+    border: 2px solid black;
+}
+
+.orgchart td {
+    text-align: center;
+}
+
+/* For line */
+.orgchart th.width-50 {
+    width: 50%;
+}
+
+.orgchart th.right {
+    border-right: 4px solid blue;
+}
+
+.orgchart th.top {
+    border-top: 4px solid blue;
+}
+
+.orgchart th {
+    height: 20px;
+}
+
+.orgchart table.line {
+    width: 100%;
+}
+

@@ -1,9 +1,6 @@
 # Compiled class file
 *.class
 
-# Log file
-*.log
-
 # Package Files #
 *.jar
 *.war
@@ -13,7 +10,7 @@
 *.tar.gz
 *.rar
 
-
+# IDEs and editors
 .idea
 *.iml
 target

@@ -1,0 +1,34 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.twister</groupId>
+    <artifactId>organization-charts</artifactId>
+    <version>v1.2-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <groupId>com.twister.organization-charts</groupId>
+  <version>v1.2-SNAPSHOT</version>
+  <artifactId>ui</artifactId>
+
+  <properties>
+    <image.name>twister22/organization-chart-ui</image.name>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>build-image</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
