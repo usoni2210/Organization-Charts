@@ -23,7 +23,7 @@
     <io.fabric.version>0.33.0</io.fabric.version>
     <mysql.connector.version>8.0.18</mysql.connector.version>
     <h2database.version>1.4.199</h2database.version>
-    <springframework.boot.version>2.2.0.RELEASE</springframework.boot.version>
+    <springframework.boot.version>2.5.12</springframework.boot.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
